@@ -1,7 +1,8 @@
-exports.chessCard = 
+exports.template = 
 {
+    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
     "type": "AdaptiveCard",
-    "version": "1.0",
+    "version": "1.2",
     "body": [
         {
             "type": "ColumnSet",
@@ -12,7 +13,7 @@ exports.chessCard =
                     "items": [
                         {
                             "type": "TextBlock",
-                            "text": "8 |r|n|b|q|k|b| |r|  \n\n7 |p|p|p|p|p|p|p|p|  \n\n6 |   |#|   |#|   |n|   |#|  \n\n5 |#|   |#|   |#|   |#|   |  \n\n4 |   |#|   |P|   |#|   |#|  \n\n3 |#|   |#|   |#|   |#|   |  \n\n2 |P|P|P|#|P|P|P|P|  \n\n1 |R|N|B|Q|K|B|N|R|  \n\n   ---a b c d e f g h",
+                            "text": "",
                             "height": "stretch",
                             "maxLines": 8,
                             "fontType": "Monospace",
@@ -62,7 +63,7 @@ exports.chessCard =
                                         },
                                         {
                                             "type": "TextBlock",
-                                            "text": "false",
+                                            "text": "☐",
                                             "id": "checkMate"
                                         }
                                     ]
@@ -82,25 +83,30 @@ exports.chessCard =
                                     "items": [
                                         {
                                             "type": "TextBlock",
-                                            "text": "White/long:"
+                                            "text": "White/long:",
+                                            "horizontalAlignment": "Right"
                                         },
                                         {
                                             "type": "TextBlock",
-                                            "text": "White/short:"
+                                            "text": "White/short:",
+                                            "horizontalAlignment": "Right"
                                         },
                                         {
                                             "type": "TextBlock",
-                                            "text": "Black/long:"
+                                            "text": "Black/long:",
+                                            "horizontalAlignment": "Right"
                                         },
                                         {
                                             "type": "TextBlock",
-                                            "text": "Black/short:"
+                                            "text": "Black/short:",
+                                            "wrap": true,
+                                            "horizontalAlignment": "Right"
                                         }
                                     ]
                                 },
                                 {
                                     "type": "Column",
-                                    "width": "stretch",
+                                    "width": "auto",
                                     "items": [
                                         {
                                             "type": "TextBlock",
@@ -109,17 +115,17 @@ exports.chessCard =
                                         },
                                         {
                                             "type": "TextBlock",
-                                            "text": "true",
+                                            "text": "☑",
                                             "id": "whiteShort"
                                         },
                                         {
                                             "type": "TextBlock",
-                                            "text": "true",
+                                            "text": "☑",
                                             "id": "blackLong"
                                         },
                                         {
                                             "type": "TextBlock",
-                                            "text": "false",
+                                            "text": "☑",
                                             "id": "blackShort"
                                         }
                                     ]
@@ -154,7 +160,8 @@ exports.chessCard =
                                     "items": [
                                         {
                                             "type": "TextBlock",
-                                            "text": "From:"
+                                            "text": "From:",
+                                            "horizontalAlignment": "Right"
                                         }
                                     ]
                                 },
@@ -165,6 +172,8 @@ exports.chessCard =
                                         {
                                             "type": "Input.Text",
                                             "id": "moveFrom",
+                                            "placeholder": "e.g.: d2",
+                                            "isRequired": true
                                         }
                                     ]
                                 }
@@ -186,7 +195,8 @@ exports.chessCard =
                                     "items": [
                                         {
                                             "type": "TextBlock",
-                                            "text": "To:"
+                                            "text": "To:",
+                                            "horizontalAlignment": "Right"
                                         }
                                     ]
                                 },
@@ -196,7 +206,8 @@ exports.chessCard =
                                     "items": [
                                         {
                                             "type": "Input.Text",
-                                            "id": "moveTo"
+                                            "id": "moveTo",
+                                            "placeholder": "e.g.: d4"
                                         }
                                     ]
                                 }
@@ -211,11 +222,17 @@ exports.chessCard =
             "actions": [
                 {
                     "type": "Action.Submit",
-                    "title": "Action.Submit"
+                    "title": "Submit"
                 }
             ],
             "horizontalAlignment": "Center"
+        },
+        {
+            "type": "Input.Text",
+            "placeholder": "Placeholder text",
+            "id": "currentBoard",
+            "isVisible": false,
+            "value": ""
         }
-    ],
-    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json"
-}
+    ]
+};

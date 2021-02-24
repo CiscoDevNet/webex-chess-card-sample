@@ -1,7 +1,6 @@
 var Framework = require('webex-node-bot-framework'); 
 var webhook = require('webex-node-bot-framework/webhook');
-var chess = require('./chess');
-var chessCaard=require('./chessCard');
+var chess=require('./chess');
 
 // var express = require('express');
 // var bodyParser = require('body-parser');
@@ -56,7 +55,8 @@ framework.hears('hello', function(bot, trigger) {
 });
 
 framework.hears('chess', function(bot, trigger) {
-    bot.say('markdown','```\n'+chess.start()+'\n```');
+    // bot.say('markdown','```\n'+chess.start()+'\n```');
+    bot.sendCard(chess.start(), "Sorry, it appears your client cannot render adaptive card attachments");
     responded = true;
 });
 
@@ -65,9 +65,21 @@ framework.hears('move', function(bot, trigger) {
         bot.say('markdown','Invalid move syntax, example: `move a1 a3`');
         return;
     }
-    bot.say('markdown','```\n'+chess.move(trigger.args[1],trigger.args[2])+'\n```');
+    bot.sendCard(chess.moveText(null,trigger.args[1],trigger.args[2]), "Sorry, it appears your client cannot render adaptive card attachments");
     responded = true;
 });
+
+framework.on('attachmentAction', function(bot, trigger){
+    let from=trigger.attachmentAction.inputs.moveFrom;
+    let to=trigger.attachmentAction.inputs.moveTo;
+    let currentBoard=trigger.attachmentAction.inputs.currentBoard;
+    if (!from && !to){
+        bot.say('markdown','Invalid move syntax, example: From `d2` to `d4`');
+        return;
+    }
+    bot.sendCard(chess.move(currentBoard,from,to), "Sorry, it appears your client cannot render adaptive card attachments");
+    responded = true;
+})
 
 // Its a good practice to handle unexpected input
 framework.hears(/.*/gim, function(bot, trigger) {
