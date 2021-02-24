@@ -1,5 +1,7 @@
 var Framework = require('webex-node-bot-framework'); 
 var webhook = require('webex-node-bot-framework/webhook');
+const fetch = require('node-fetch');
+
 var chess=require('./chess');
 
 // var express = require('express');
@@ -69,7 +71,7 @@ framework.hears('move', function(bot, trigger) {
     responded = true;
 });
 
-framework.on('attachmentAction', function(bot, trigger){
+framework.on('attachmentAction', async function(bot, trigger){
     let from=trigger.attachmentAction.inputs.moveFrom;
     let to=trigger.attachmentAction.inputs.moveTo;
     let currentBoard=trigger.attachmentAction.inputs.currentBoard;
@@ -77,7 +79,23 @@ framework.on('attachmentAction', function(bot, trigger){
         bot.say('markdown','Invalid move syntax, example: From `d2` to `d4`');
         return;
     }
-    bot.sendCard(chess.move(currentBoard,from,to), "Sorry, it appears your client cannot render adaptive card attachments");
+    let webex = bot.getWebexSDK();
+    let message = await webex.messages.get(trigger.attachmentAction.messageId);
+    let newMessage = {
+        roomId: message.roomId,
+        // attachments: message.attachments,
+        text: "new message"
+    };
+    const response = await fetch(`https://webexapis.com/v1/messages/${message.id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${process.env.WEBEX_ACCESS_TOKEN}`
+        },
+        body: JSON.stringify(newMessage)
+    });
+    console.log(response);
+    // bot.sendCard(chess.move(currentBoard,from,to), "Sorry, it appears your client cannot render adaptive card attachments");
     responded = true;
 })
 
