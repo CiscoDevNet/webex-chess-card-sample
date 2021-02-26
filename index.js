@@ -4,11 +4,6 @@ const fetch = require('node-fetch');
 
 var chess=require('./chess');
 
-// var express = require('express');
-// var bodyParser = require('body-parser');
-// var app = express();
-// app.use(bodyParser.json());
-
 // Load process.env values from .env file
 require('dotenv').config();
 
@@ -50,23 +45,23 @@ framework.on('spawn', function (bot, id, addedBy) {
 });
 
 var responded = false;
+
 // say hello
 framework.hears('hello', function(bot, trigger) {
-  bot.say('Hello %s!', trigger.person.displayName);
+  bot.say(`Hello ${trigger.person.displayName}!  Say "new" to start a new game of chess`, );
   responded = true;
 });
 
-framework.hears('chess', function(bot, trigger) {
-    // bot.say('markdown','```\n'+chess.start()+'\n```');
+// Start a new game
+framework.hears(/^new$/, function(bot, trigger) {
     bot.sendCard(chess.start(), "Sorry, it appears your client cannot render adaptive card attachments");
     responded = true;
 });
 
 framework.hears('move', function(bot, trigger) {
-    if (!trigger.args[1] && !trigger.args[2]){
-        bot.say('markdown','Invalid move syntax, example: `move a1 a3`');
-        return;
-    }
+    let from=trigger.args[1];
+    let to=trigger.args[2]
+
     bot.sendCard(chess.moveText(null,trigger.args[1],trigger.args[2]), "Sorry, it appears your client cannot render adaptive card attachments");
     responded = true;
 });
@@ -75,18 +70,20 @@ framework.on('attachmentAction', async function(bot, trigger){
     let from=trigger.attachmentAction.inputs.moveFrom;
     let to=trigger.attachmentAction.inputs.moveTo;
     let currentBoard=trigger.attachmentAction.inputs.currentBoard;
-    if (!from && !to){
-        bot.say('markdown','Invalid move syntax, example: From `d2` to `d4`');
-        return;
-    }
-    let webex = bot.getWebexSDK();
-    let message = await webex.messages.get(trigger.attachmentAction.messageId);
+
     let newMessage = {
-        roomId: message.roomId,
-        // attachments: message.attachments,
-        text: "new message"
+        parentId: trigger.attachmentAction.messageId,
+        roomId: trigger.attachmentAction.roomId,
+        text: "Sorry, it appears your client cannot render adaptive card attachments",
+        attachments: [
+            {
+                "contentType": "application/vnd.microsoft.card.adaptive",
+                "content": chess.move(currentBoard,from,to)
+            }
+        ]
     };
-    const response = await fetch(`https://webexapis.com/v1/messages/${message.id}`, {
+
+    const response = await fetch(`https://webexapis.com/v1/messages/${trigger.attachmentAction.messageId}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
@@ -95,7 +92,7 @@ framework.on('attachmentAction', async function(bot, trigger){
         body: JSON.stringify(newMessage)
     });
     console.log(response);
-    // bot.sendCard(chess.move(currentBoard,from,to), "Sorry, it appears your client cannot render adaptive card attachments");
+
     responded = true;
 })
 
@@ -106,14 +103,6 @@ framework.hears(/.*/gim, function(bot, trigger) {
   }
   responded = false;
 });
-
-// // define express path for incoming webhooks
-// app.post('/framework', webhook(framework));
-
-// // start express server
-// var server = app.listen(config.port, function () {
-//   framework.debug('Framework listening on port %s', config.port);
-// });
 
 // gracefully shutdown (ctrl-c)
 process.on('SIGINT', function() {

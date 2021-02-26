@@ -19,6 +19,13 @@ exports.template =
                             "fontType": "Monospace",
                             "size": "Medium",
                             "id": "board"
+                        },
+                        {
+                            "type": "TextBlock",
+                            "text": "-> New game",
+                            "size": "Medium",
+                            "weight": "Bolder",
+                            "id": "status"
                         }
                     ]
                 },
@@ -53,7 +60,7 @@ exports.template =
                                     "items": [
                                         {
                                             "type": "TextBlock",
-                                            "text": "white",
+                                            "text": "White",
                                             "id": "toMove"
                                         },
                                         {
@@ -229,7 +236,6 @@ exports.template =
         },
         {
             "type": "Input.Text",
-            "placeholder": "Placeholder text",
             "id": "currentBoard",
             "isVisible": false,
             "value": ""
