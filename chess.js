@@ -1,24 +1,11 @@
-const jsChessEngine = require('js-chess-engine');
-const { move, aiMove, status, getFen } = jsChessEngine;
+const chess = require('js-chess-engine');
 const chessCardTemplate = require('./chessCardTemplate');
 
-// FEN (Forsyth-Edwards) chess notation for the opening board
+// FEN (Forsyth-Edwards Notation) for the opening board
 const startPosition = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 var localBoard;
 
-// Board layout
-// 8 |_|#|_|#|_|#|_|#|
-// 7 |#|_|#|_|#|_|#|_|
-// 6 |_|#|_|#|_|#|_|#|
-// 5 |#|_|#|_|#|_|#|_|
-// 4 |_|#|_|#|_|#|_|#|
-// 3 |#|_|#|_|#|_|#|_|
-// 2 |_|#|_|#|_|#|_|#|
-// 1 |#|_|#|_|#|_|#|_|
-//    a b c d e f g h
-
 function renderBoard(board) {
-    // let rank = '';
     let textBoard = '';
 
     '87654321'.split('').forEach(rank => {
@@ -38,7 +25,7 @@ function renderBoard(board) {
 }
 
 exports.start = function () {
-    localBoard = status(startPosition);
+    localBoard = chess.status(startPosition);
     let card = chessCardTemplate.template;
     card.body[0].columns[0].items[0].text = renderBoard(localBoard);
     card.body[4].value = startPosition;
@@ -46,15 +33,15 @@ exports.start = function () {
 }
 
 exports.move = function (fen, from, to) {
-    let currentBoard = status(fen);
+    let currentBoard = chess.status(fen);
     let card = chessCardTemplate.template;
     let statusMessage;
 
     try {
-        currentBoard = move(status(fen), from.toUpperCase(), to.toUpperCase());
-        let cpuMove = aiMove(currentBoard, level = 2); //Intermediate
+        currentBoard = chess.move(chess.status(fen), from.toUpperCase(), to.toUpperCase());
+        let cpuMove = chess.aiMove(currentBoard, level = 2); //Intermediate
         [from, to] = Object.entries(cpuMove)[0];
-        currentBoard = move(currentBoard, from, to);
+        currentBoard = chess.move(currentBoard, from, to);
         statusMessage = `-> Black moves: ${from} ${to}`;
     }
     catch (err) {
@@ -73,7 +60,7 @@ exports.move = function (fen, from, to) {
     card.body[0].columns[1].items[2].columns[1].items[3].text = currentBoard.castling.blackShort ? '☑' : '☐';
 
     // Store the current full board config in FEN notation into the hidden key 'currentBoard'
-    card.body[4].value = getFen(currentBoard);
+    card.body[4].value = chess.getFen(currentBoard);
     localBoard = currentBoard;
     return card;
 }
