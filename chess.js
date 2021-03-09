@@ -3,7 +3,6 @@ const chessCardTemplate = require('./chessCardTemplate');
 
 // FEN (Forsyth-Edwards Notation) for the opening board
 const startPosition = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
-var localBoard;
 
 function renderBoard(board) {
     let textBoard = '';
@@ -25,9 +24,8 @@ function renderBoard(board) {
 }
 
 exports.start = function () {
-    localBoard = chess.status(startPosition);
     let card = chessCardTemplate.template;
-    card.body[0].columns[0].items[0].text = renderBoard(localBoard);
+    card.body[0].columns[0].items[0].text = renderBoard(chess.status(startPosition));
     card.body[4].value = startPosition;
     return card;
 }
@@ -38,7 +36,7 @@ exports.move = function (fen, from, to) {
     let statusMessage;
 
     try {
-        currentBoard = chess.move(chess.status(fen), from.toUpperCase(), to.toUpperCase());
+        currentBoard = chess.move(currentBoard, from.toUpperCase(), to.toUpperCase());
         let cpuMove = chess.aiMove(currentBoard, level = 2); //Intermediate
         [from, to] = Object.entries(cpuMove)[0];
         currentBoard = chess.move(currentBoard, from, to);
@@ -61,10 +59,6 @@ exports.move = function (fen, from, to) {
 
     // Store the current full board config in FEN notation into the hidden key 'currentBoard'
     card.body[4].value = chess.getFen(currentBoard);
-    localBoard = currentBoard;
     return card;
 }
 
-exports.moveText = function (from, to) {
-    return exports.moveAction(localBoard, from, to);
-}
