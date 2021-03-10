@@ -15,6 +15,7 @@
     "dependencies": {
         "dotenv": "^8.2.0",
         "js-chess-engine": "^0.6.1",
+        "node-fetch": "^2.6.1",
         "webex-node-bot-framework": "^2.3.4"
     }
 }
