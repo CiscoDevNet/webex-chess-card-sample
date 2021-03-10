@@ -2,7 +2,11 @@
 
 ## Overview
 
-Sample application demonstrating interactive, in-place Webex messaging buttons & cards.
+Sample application demonstrating the use of interactive, in-place Webex messaging adaptive cards to implement an AI chess program.
+
+![chess bot](images/chess_bot.png)
+
+https://developer.webex.com/docs/api/guides/cards
 
 **Requirements:**
 
