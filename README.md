@@ -23,7 +23,7 @@ https://developer.webex.com/docs/api/guides/cards
 * Install dependencies:
 
     ```bash
-    cd webex-chess-card-sasmple
+    cd webex-chess-card-sample
     npm install
     ```
 
